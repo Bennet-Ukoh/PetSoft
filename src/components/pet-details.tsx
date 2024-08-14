@@ -3,6 +3,7 @@
 import { usePetContext } from "@/lib/hooks";
 import { Pet } from "@/lib/types";
 import Image from "next/image";
+import PetButton from "./pet-button";
 
 type Props = {
   pet: Pet;
@@ -31,6 +32,7 @@ export default function PetDetails() {
 }
 
 function TopBar({ pet }: Props) {
+  const { handleCheckoutPet } = usePetContext();
   return (
     <div className="flex items-center bg-white px-8 py-5 border-b border-light">
       <Image
@@ -41,6 +43,10 @@ function TopBar({ pet }: Props) {
         className="rounded-full object-cover w-[75px] h-[75px]"
       />
       <h2 className="text-3xl font-semibold leading-7 ml-5">{pet?.name}</h2>
+      <div className="ml-auto space-x-2">
+        <PetButton actionType="edit">Edit</PetButton>
+        <PetButton onClick={() => handleCheckoutPet(pet.id)} actionType="checkout">Checkout</PetButton>
+      </div>
     </div>
   );
 }

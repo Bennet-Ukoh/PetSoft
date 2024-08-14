@@ -2,6 +2,7 @@
 import { usePetContext, useSearchContext } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import PetButton from "./pet-button";
 
 export default function PetList() {
   const { pets, selectedPetId, handleChangeSelectedPetId } = usePetContext();
