@@ -3,6 +3,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { usePetContext } from "@/lib/hooks";
+import { addPet } from "@/actions/actions";
+import PetFormBtn from "./pet-form-btn";
+import { toast } from "sonner";
 
 type PetFormProps = {
   actionType: "add" | "edit";
@@ -13,31 +16,19 @@ export default function PetForm({
   actionType,
   onFormSubmission,
 }: PetFormProps) {
-  const { handleAddPet, selectedPet, handleEditPet } = usePetContext();
+  const { selectedPet } = usePetContext();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const newPet = {
-      name: formData.get("name") as string,
-      ownerName: formData.get("ownerName") as string,
-      imageUrl:
-        (formData.get("imageUrl") as string) ||
-        "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
-      age: +(formData.get("age") as string),
-      notes: formData.get("notes") as string,
-    };
-
-    if (actionType === "add") {
-      handleAddPet(newPet);
-    } else if (actionType === "edit") {
-      handleEditPet(selectedPet!.id, newPet);
-    }
-
-    onFormSubmission();
-  };
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      action={async (formData) => {
+        const error = await addPet(formData);
+        if (error) {
+          toast.warning(error.message);
+          return;
+        }
+        onFormSubmission();
+      }}
+    >
       <div className="flex flex-col space-y-3">
         <div className="space-y-1">
           <Label htmlFor="name">Name</Label>
@@ -88,9 +79,7 @@ export default function PetForm({
             defaultValue={actionType == "edit" ? selectedPet?.notes : ""}
           />
         </div>
-        <Button className="self-end mt-5" type="submit">
-          {actionType === "add" ? "Add a new pet" : "Edit pet"}
-        </Button>
+        <PetFormBtn actionType={actionType} />
       </div>
     </form>
   );
