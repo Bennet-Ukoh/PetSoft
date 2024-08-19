@@ -36,25 +36,21 @@ export default function PetDetails() {
 function TopBar({ pet }: Props) {
   const { handleCheckoutPet } = usePetContext();
 
-  const [isPendin, startTransition] = useTransition();
   return (
     <div className="flex items-center bg-white px-8 py-5 border-b border-light">
       <Image
-        src={pet?.imageUrl}
+        src={pet.imageUrl}
         alt="Selected Pet Image"
         height={75}
         width={75}
         className="rounded-full object-cover w-[75px] h-[75px]"
       />
-      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet?.name}</h2>
+      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet.name}</h2>
       <div className="ml-auto space-x-2">
         <PetButton actionType="edit">Edit</PetButton>
         <PetButton
-          disabled={isPendin}
           onClick={async () => {
-            startTransition(async () => {
-              await deletePet(pet.id);
-            });
+            await handleCheckoutPet(pet.id);
           }}
           actionType="checkout"
         >
