@@ -18,7 +18,7 @@ type PetButtonProps = {
   actionType: "add" | "edit" | "checkout";
   children?: React.ReactNode;
   onClick?: () => void;
-  disapled?: boolean;
+  disabled?: boolean;
 };
 
 export default function PetButton({
