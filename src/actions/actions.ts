@@ -1,10 +1,8 @@
 "use server";
 
 import prisma from "@/lib/db";
-import { PetEssentials } from "@/lib/types";
 import { sleep } from "@/lib/utils";
 import { petFormSchema, petIdSchema } from "@/lib/validations";
-import { Pet } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function addPet(pet: unknown) {
