@@ -6,10 +6,10 @@ export default function Page() {
   return (
     <main>
       <H1 className="text-center">Sign Up</H1>
-      <AuthForm />
+      <AuthForm type="signUp" />
       <p className="mt-2  text-sm">
         Already have an account?{" "}
-        <Link className="text-zinc-500 font-medium" href="/signup">
+        <Link className="text-zinc-500 font-medium" href="/login">
           Log In
         </Link>
       </p>
