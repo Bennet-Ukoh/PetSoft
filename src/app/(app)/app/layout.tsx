@@ -3,10 +3,10 @@ import AppHeader from "@/components/app-header";
 import BackgroundPattern from "@/components/background-pattern";
 import PetContextProvider from "@/contexts/pet-context-provider";
 import SearchContextProvider from "@/contexts/search-context-provider";
-import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
+import { getPetsByUserId } from "@/lib/server-utils";
 
 export default async function Layout({
   children,
@@ -17,11 +17,7 @@ export default async function Layout({
   if (!session?.user) {
     redirect("/login");
   }
-  const pets = await prisma.pet.findMany({
-    where: {
-      userId: session.user.id,
-    },
-  });
+  const pets = await getPetsByUserId(session.user.id);
   return (
     <>
       <BackgroundPattern />
