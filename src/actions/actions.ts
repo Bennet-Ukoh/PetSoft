@@ -9,20 +9,39 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { checkAuth, getPetById } from "@/lib/server-utils";
 import { get } from "http";
+import { Prisma } from "@prisma/client";
+import { AuthError } from "next-auth";
+import email from "next-auth/providers/email";
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // --- User actions ---
 
-export async function logIn(formData: unknown) {
+export async function logIn(prevState: unknown, formData: unknown) {
+  await sleep(1000);
   //check if formData is a FormData type
   if (!(formData instanceof FormData)) {
     return { message: "Invalid form data" };
   }
-
-  await signIn("credentials", formData);
-  redirect("/app/dashboard");
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin": {
+          return { message: "Invalid credentials" };
+        }
+        default: {
+          return { message: " Error Failed to sign in" };
+        }
+      }
+    }
+    throw error; // nextjs redirects throw error, so we need to rethrow it
+  }
 }
 
-export async function signUp(formData: unknown) {
+export async function signUp(prevState: unknown, formData: unknown) {
+  await sleep(1000);
   //check if formData is a FormData type
   if (!(formData instanceof FormData)) {
     return { message: "Invalid form data" };
@@ -41,17 +60,27 @@ export async function signUp(formData: unknown) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await prisma.user.create({
-    data: {
-      email,
-      hashedPassword,
-    },
-  });
+  try {
+    await prisma.user.create({
+      data: {
+        email,
+        hashedPassword,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return { message: "Email already exists" };
+      }
+    }
+    return { message: "Failed to create user" };
+  }
 
   await signIn("credentials", formData);
 }
 
 export async function logOut() {
+  await sleep(1000);
   await signOut({ redirectTo: "/" });
 }
 
@@ -155,4 +184,28 @@ export async function deletePet(petId: unknown) {
     return { message: "Failed to delete pet" };
   }
   revalidatePath("/app", "layout");
+}
+
+// ----payment actions ---
+
+export async function createCheckoutSession() {
+  //authentication check
+  const session = await checkAuth();
+
+  //create checkout session
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer_email: session.user.email,
+    line_items: [
+      {
+        price: "price_1PwJh0GXb2L5RZYcPgLoG6U4",
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `${process.env.CANONICAL_URL}/payment?success=true`,
+    cancel_url: `${process.env.CANONICAL_URL}/payment?cancelled=true`,
+  });
+
+  //redirect user
+  redirect(checkoutSession.url);
 }
