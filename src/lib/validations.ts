@@ -5,12 +5,12 @@ export const petIdSchema = z.string().cuid();
 
 export const petFormSchema = z
   .object({
-    name: z.string().trim().min(1, { message: "Name is required" }).max(5),
+    name: z.string().trim().min(1, { message: "Name is required" }).max(10),
     ownerName: z
       .string()
       .trim()
       .min(1, { message: "Owner Name is required" })
-      .max(5),
+      .max(10),
     imageUrl: z.union([
       z.literal(""),
       z.string().trim().url({ message: "Invalid Image Url" }),

@@ -6,7 +6,7 @@ type PetFormBtnProps = {
 
 export default function PetFormBtn({ actionType }: PetFormBtnProps) {
   return (
-    <Button className="self-end mt-5" type="submit">
+    <Button className="self-end mt-5 " type="submit" >
       {actionType === "add" ? "Add a new pet" : "Edit pet"}
     </Button>
   );

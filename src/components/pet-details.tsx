@@ -35,7 +35,7 @@ function TopBar({ pet }: Props) {
   const { handleCheckoutPet } = usePetContext();
 
   return (
-    <div className="flex items-center bg-white px-8 py-5 border-b border-light">
+    <div className="flex items-center bg-white md:px-8 py-5 border-b border-light">
       <Image
         src={pet.imageUrl}
         alt="Selected Pet Image"
@@ -43,8 +43,10 @@ function TopBar({ pet }: Props) {
         width={75}
         className="rounded-full object-cover w-[75px] h-[75px]"
       />
-      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet.name}</h2>
-      <div className="ml-auto space-x-2">
+      <h2 className="md:text-3xl text-xl font-semibold md:leading-7 md:ml-5 ml-2 mr-4">
+        {pet.name}
+      </h2>
+      <div className="md:ml-auto md:space-x-2 ml-2 space-y-2">
         <PetButton actionType="edit">Edit</PetButton>
         <PetButton
           onClick={async () => {
