@@ -17,7 +17,7 @@ export default function Page({
   const router = useRouter();
 
   return (
-    <main className="flex flex-col items-center space-y-10">
+    <main className="flex flex-col items-center space-y-10 text-center">
       <H1>PetSoft access requires payment</H1>
 
       {searchParams.success && (
@@ -46,12 +46,12 @@ export default function Page({
       )}
 
       {searchParams.success && (
-        <p className="text-sm text-green-700">
-          Payment successful! You now have lifetime access to PetSoft.
-        </p>
+        <div className="sm:text-xl text-sm font-bold text-green-700 text-center">
+          Payment successful! <p>You now have lifetime access to PetSoft.</p>
+        </div>
       )}
       {searchParams.cancelled && (
-        <p className="text-sm text-red-700">
+        <p className="text-sm text-red-700 text-center">
           Payment cancelled. You can try again.
         </p>
       )}

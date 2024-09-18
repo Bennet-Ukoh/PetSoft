@@ -70,7 +70,11 @@ export default function PetForm({
         </div>
         <div className="space-y-1">
           <Label htmlFor="imageUrl">Image Url</Label>
-          <Input id="imageUrl" {...register("imageUrl")} />
+          <Input
+            id="imageUrl"
+            {...register("imageUrl")}
+            placeholder="Skip, not implemented"
+          />
           {errors.imageUrl && (
             <p className="text-red-500">{errors.imageUrl.message}</p>
           )}
